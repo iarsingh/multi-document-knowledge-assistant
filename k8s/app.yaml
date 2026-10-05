@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-document-knowledge-assistant
+  labels:
+    app: multi-document-knowledge-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multi-document-knowledge-assistant
+  template:
+    metadata:
+      labels:
+        app: multi-document-knowledge-assistant
+    spec:
+      containers:
+        - name: api
+          image: multi-document-knowledge-assistant:local
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /v1/readyz
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multi-document-knowledge-assistant
+spec:
+  selector:
+    app: multi-document-knowledge-assistant
+  ports:
+    - port: 80
+      targetPort: 8080
